@@ -1,0 +1,41 @@
+services:
+  web:
+    image: odoo:17
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
+      - odoo-data:/var/lib/odoo
+    environment:
+      - POSTGRES_DB=odoo
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_HOST=db
+      - ADDONS_PATH=/mnt/extra-addons
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=odoo
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    ports:    
+      - "5432:5432"    
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "adam@vettsolutions.com"
+      PGADMIN_DEFAULT_PASSWORD: "your_strong_password"
+    ports:
+      - "8080:80"
+    depends_on:
+      - db  
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+volumes:
+  odoo-data:
+  db-data:
+  pgadmin-data:
